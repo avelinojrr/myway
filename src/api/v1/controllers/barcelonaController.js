@@ -1,4 +1,4 @@
-import { getScoreboard } from '../services/espnServiceNBA.js'; // Reutilizamos la función del scoreboard
+import { getScoreboard } from '../services/espnServiceFootball.js'; // Reutilizamos la función del scoreboard
 import { getBarcelonaCalendarEvents } from '../services/barcelonaService.js';
 
 export const fetchBarcelonaEvents = async (req, res) => {

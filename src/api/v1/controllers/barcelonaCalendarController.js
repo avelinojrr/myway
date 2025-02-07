@@ -1,6 +1,6 @@
 import { createCalendarEvent } from '../services/calendarService.js';
 import { getBarcelonaCalendarEvents } from '../services/barcelonaService.js';
-import { getScoreboard } from '../services/espnServiceNBA.js';
+import { getScoreboard } from '../services/espnServiceFootball.js';
 
 export const createBarcelonaCalendarEvent = async (req, res) => {
   try {

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://site.api.espn.com/apis/site/v2/sports/basketball/nba';
+const BASE_URL = 'https://site.api.espn.com/apis/site/v2/sports/soccer/esp.1';
 
 /**
  * Obtiene el scoreboard de la NBA.
@@ -12,7 +12,7 @@ export const getScoreboard = async () => {
         // Ajusta según la estructura real del JSON.
         return response.data;
     } catch (error) {
-        console.error('Error al obtener el scoreboard de NBA:', error);
+        console.error('Error al obtener el scoreboard de la LIGA:', error);
         throw error;
     }
 };
@@ -26,7 +26,7 @@ export const getNews = async () => {
         const response = await axios.get(`${BASE_URL}/news`);
         return response.data;
     } catch (error) {
-        console.error('Error al obtener las noticias de NBA:', error);
+        console.error('Error al obtener las noticias de la LIGA:', error);
         throw error;
     }
 };
@@ -40,7 +40,7 @@ export const getAllTeams = async () => {
         const response = await axios.get(`${BASE_URL}/teams`);
         return response.data;
     } catch (error) {
-        console.error('Error al obtener los equipos de NBA:', error);
+        console.error('Error al obtener los equipos de la LIGA:', error);
         throw error;
     }
 };
@@ -55,7 +55,7 @@ export const getTeam = async (teamSlug) => {
         const response = await axios.get(`${BASE_URL}/teams/${teamSlug}`);
         return response.data;
     } catch (error) {
-        console.error(`Error al obtener el equipo ${teamSlug} de NBA:`, error);
+        console.error(`Error al obtener el equipo ${teamSlug} de la LIGA:`, error);
         throw error;
     }
 };
