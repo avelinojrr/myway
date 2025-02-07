@@ -1,6 +1,6 @@
 import { createCalendarEvent } from '../services/calendarService.js';
 import { getRedSoxCalendarEvents } from '../services/bostonRedSoxService.js';
-import { getScoreboard } from '../services/espnServiceNBA.js';
+import { getScoreboard } from '../services/espnServiceMLB.js';
 
 export const createRedSoxCalendarEvent = async (req, res) => {
   try {
