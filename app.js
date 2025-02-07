@@ -11,6 +11,10 @@ import interMiamiRoutes from './src/api/v1/routes/interMiamiRoutes.js';
 import interMiamiCalendarRoutes from './src/api/v1/routes/interMiamiCalendarRoutes.js';
 import kansasCityChiefsRoutes from './src/api/v1/routes/kansasCityChiefsRoutes.js';
 import kansasCityChiefsCalendarRoutes from './src/api/v1/routes/kansasCityChiefsCalendarRoutes.js';
+import bostonRedSoxRoutes from './src/api/v1/routes/bostonRedSoxRoutes.js';
+import bostonRedSoxCalendarRoutes from './src/api/v1/routes/bostonRedSoxCalendarRoutes.js';
+import losAngelesDodgersRoutes from './src/api/v1/routes/losAngelesDodgersRoutes.js';
+import losAngelesDodgersCalendarRoutes from './src/api/v1/routes/losAngelesDodgersCalendarRoutes.js';
 
 dotenv.config();
 
@@ -41,5 +45,13 @@ app.use('/v1/calendar', interMiamiCalendarRoutes);
 // KANSAS CITY CHIEFS API
 app.use('/v1/kansas-city-chief', kansasCityChiefsRoutes);
 app.use('/v1/calendar', kansasCityChiefsCalendarRoutes);
+
+// BOSTON RED SOX API
+app.use('/v1/boston-red-sox', bostonRedSoxRoutes);
+app.use('/v1/calendar', bostonRedSoxCalendarRoutes);
+
+// LOS ANGELES DODGERS API
+app.use('/v1/los-angeles-dodgers', losAngelesDodgersRoutes);
+app.use('/v1/calendar', losAngelesDodgersCalendarRoutes);
 
 export default app;
