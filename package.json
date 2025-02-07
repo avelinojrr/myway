@@ -1,0 +1,23 @@
+{
+  "name": "rally-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "pre-dev": "node testEspnApi.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "axios": "1.7.9",
+    "dotenv": "16.4.7",
+    "express": "4.21.2",
+    "googleapis": "144.0.0",
+    "luxon": "3.5.0",
+    "mongoose": "8.10.0"
+  }
+}
