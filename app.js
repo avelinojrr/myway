@@ -9,6 +9,8 @@ import hornetsRoutes from './src/api/v1/routes/hornetsRoutes.js';
 import hornetsCalendarRoutes from './src/api/v1/routes/hornetsCalendarRoutes.js';
 import interMiamiRoutes from './src/api/v1/routes/interMiamiRoutes.js';
 import interMiamiCalendarRoutes from './src/api/v1/routes/interMiamiCalendarRoutes.js';
+import kansasCityChiefsRoutes from './src/api/v1/routes/kansasCityChiefsRoutes.js';
+import kansasCityChiefsCalendarRoutes from './src/api/v1/routes/kansasCityChiefsCalendarRoutes.js';
 
 dotenv.config();
 
@@ -24,16 +26,20 @@ app.use('/v1/espn', espnRoutes);
 app.use('/v1/lakers', lakersRoutes);
 app.use('/v1/calendar', lakersCalendarRoutes);
 
-// BARCELONA API
-app.use('/v1/barcelona', barcelonaRoutes);
-app.use('/v1/calendar', barcelonaCalendarRoutes);
-
 // HORNETS API
 app.use('/v1/hornets', hornetsRoutes);
 app.use('/v1/calendar', hornetsCalendarRoutes);
 
+// BARCELONA API
+app.use('/v1/barcelona', barcelonaRoutes);
+app.use('/v1/calendar', barcelonaCalendarRoutes);
+
 // INTER MIAMI API
 app.use('/v1/inter-miami', interMiamiRoutes);
 app.use('/v1/calendar', interMiamiCalendarRoutes);
+
+// KANSAS CITY CHIEFS API
+app.use('/v1/kansas-city-chief', kansasCityChiefsRoutes);
+app.use('/v1/calendar', kansasCityChiefsCalendarRoutes);
 
 export default app;
