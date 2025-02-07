@@ -16,6 +16,10 @@ import bostonRedSoxCalendarRoutes from './src/api/v1/routes/bostonRedSoxCalendar
 import losAngelesDodgersRoutes from './src/api/v1/routes/losAngelesDodgersRoutes.js';
 import losAngelesDodgersCalendarRoutes from './src/api/v1/routes/losAngelesDodgersCalendarRoutes.js';
 
+import { scheduleDailySync } from './src/api/v1/jobs/syncJob.js';
+
+scheduleDailySync();
+
 dotenv.config();
 
 const app = express();
@@ -46,7 +50,7 @@ app.use('/v1/calendar', interMiamiCalendarRoutes);
 app.use('/v1/kansas-city-chief', kansasCityChiefsRoutes);
 app.use('/v1/calendar', kansasCityChiefsCalendarRoutes);
 
-// BOSTON RED SOX API
+// BOSTON RED SOX APIw
 app.use('/v1/boston-red-sox', bostonRedSoxRoutes);
 app.use('/v1/calendar', bostonRedSoxCalendarRoutes);
 
