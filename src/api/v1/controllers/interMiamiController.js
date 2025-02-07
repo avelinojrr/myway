@@ -1,4 +1,4 @@
-import { getScoreboard } from '../services/espnServiceNBA.js';
+import { getScoreboard } from '../services/espnServiceSoccer.js';
 import { getInterMiamiCalendarEvents } from '../services/interMiamiService.js';
 
 export const fetchInterMiamiEvents = async (req, res) => {
