@@ -31,3 +31,27 @@ export const createCalendarEvent = async (eventData) => {
         throw error;
     }
 };
+
+/**
+ * Lista eventos en el calendario dentro de un rango de tiempo.
+ * @param {string} timeMin - Fecha/hora mínima (ISO).
+ * @param {string} timeMax - Fecha/hora máxima (ISO).
+ * @param {string} query - (Opcional) Texto para buscar en el resumen.
+ * @returns {Promise<Object>} Datos de la lista de eventos.
+ */
+export const listCalendarEvents = async (timeMin, timeMax, query = '') => {
+    try {
+        const response = await calendar.events.list({
+            calendarId: 'primary',
+            timeMin,
+            timeMax,
+            q: query,
+            singleEvents: true,
+            orderBy: 'startTime',
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error al listar los eventos en Google Calendar:', error);
+        throw error;
+    }
+}

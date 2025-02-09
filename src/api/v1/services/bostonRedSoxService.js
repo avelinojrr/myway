@@ -9,7 +9,6 @@ export const filterRedSoxGames = (events) => {
     return events.filter((game) => {
         if (!game.competitions || !game.competitions[0]) return false;
         const competitors = game.competitions[0].competitors;
-        console.log('Competitors:', competitors.map(c => c.team.shortDisplayName));
         return competitors.some((competitor) =>
             competitor.team.shortDisplayName.toLowerCase().includes('red sox')
         );

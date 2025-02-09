@@ -11,7 +11,6 @@ export const filterChiefsGames = (events) => {
         if (!game.competitions || !game.competitions[0]) return false;
         const competitors = game.competitions[0].competitors;
         // Para verificar, imprimimos en consola los nombres de los equipos
-        console.log('Competitors:', competitors.map(c => c.team.shortDisplayName));
         // Filtramos si alguno de los equipos contiene "chief" (esto cubrirá "Chiefs")
         return competitors.some((competitor) =>
             competitor.team.shortDisplayName.toLowerCase().includes('chief')

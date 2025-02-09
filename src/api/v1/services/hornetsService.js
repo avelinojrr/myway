@@ -11,7 +11,6 @@ export const filterHornetsGames = (events) => {
         if (!game.competitions || !game.competitions[0]) return false;
         const competitors = game.competitions[0].competitors;
         // Mostramos en consola los nombres para verificar
-        console.log('Competitors:', competitors.map(c => c.team.shortDisplayName));
         // Filtramos si alguno de los equipos contiene "hornets" (en minúsculas)
         return competitors.some((competitor) =>
             competitor.team.shortDisplayName.toLowerCase().includes('hornets')
