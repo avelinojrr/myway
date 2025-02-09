@@ -26,5 +26,9 @@ export const endpointsConfig = [
     {
       getUrl: 'http://localhost:3000/v1/barcelona/events',
       postUrl: 'http://localhost:3000/v1/calendar/barcelona'
+    },
+    {
+      getUrl: 'http://localhost:3000/v1/uefa-champions/events',
+      postUrl: 'http://localhost:3000/v1/calendar/uefa-champions'
     }
   ];

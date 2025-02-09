@@ -36,6 +36,7 @@ export const scheduleDailySync = () => {
             console.error(`Error sincronizando ${config.getUrl}:`, err.message);
           }
         }
+        console.log('Sincronización diaria finalizada.');
       } catch (error) {
         console.error('Error general en la sincronización:', error.message);
       }

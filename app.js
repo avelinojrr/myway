@@ -15,6 +15,8 @@ import bostonRedSoxRoutes from './src/api/v1/routes/bostonRedSoxRoutes.js';
 import bostonRedSoxCalendarRoutes from './src/api/v1/routes/bostonRedSoxCalendarRoutes.js';
 import losAngelesDodgersRoutes from './src/api/v1/routes/losAngelesDodgersRoutes.js';
 import losAngelesDodgersCalendarRoutes from './src/api/v1/routes/losAngelesDodgersCalendarRoutes.js';
+import uefaChampionsRoutes from './src/api/v1/routes/uefaChampionsRoutes.js';
+import uefaChampionsCalendarRoutes from './src/api/v1/routes/uefaChampionsCalendarRoutes.js';
 
 import { scheduleDailySync } from './src/api/v1/jobs/syncJob.js';
 
@@ -57,5 +59,9 @@ app.use('/v1/calendar', bostonRedSoxCalendarRoutes);
 // LOS ANGELES DODGERS API
 app.use('/v1/los-angeles-dodgers', losAngelesDodgersRoutes);
 app.use('/v1/calendar', losAngelesDodgersCalendarRoutes);
+
+// UEFA CHAMPIONS API
+app.use('/v1/uefa-champions', uefaChampionsRoutes);
+app.use('/v1/calendar', uefaChampionsCalendarRoutes);
 
 export default app;
