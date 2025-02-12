@@ -17,7 +17,7 @@ const sportTeamMapping = {
     f1: ["f1"],
 };
 
-cron.schedule("* * * * *", async () => {
+cron.schedule("0 */12 * * *", async () => {
     console.log("⏳ Ejecutando cron job para sincronizar eventos deportivos...");
     try {
         for (const sport in sportTeamMapping) {
