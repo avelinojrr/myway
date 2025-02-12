@@ -3,7 +3,6 @@ import cron from "node-cron";
 import { getScoreboardBySport } from "../services/espnService.js";
 import { getCalendarEventsByTeam } from "../services/eventFilterService.js";
 import { createCalendarEvent, listCalendarEvents } from "../services/calendarService.js";
-import { DateTime } from "luxon";
 import crypto from "crypto";
 
 // Mapear deportes a equipos válidos
