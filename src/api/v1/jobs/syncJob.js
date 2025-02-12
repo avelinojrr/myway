@@ -1,44 +1,77 @@
-import cron from 'node-cron';
-import axios from 'axios';
-import { endpointsConfig } from '../config/endpointsConfig.js';
-import { listCalendarEvents } from '../services/calendarService.js';
+// src/jobs/syncJob.js
+import cron from "node-cron";
+import { getScoreboardBySport } from "../services/espnService.js";
+import { getCalendarEventsByTeam } from "../services/eventFilterService.js";
+import { createCalendarEvent, listCalendarEvents } from "../services/calendarService.js";
+import { DateTime } from "luxon";
+import crypto from "crypto";
 
-export const scheduleDailySync = () => {
-    cron.schedule('* * * * *', async () => {
-      console.log('Ejecutando sincronización diaria de eventos deportivos...');
-      try {
-        for (const config of endpointsConfig) {
-          try {
-            // Consultamos el endpoint GET para obtener los eventos mapeados
-            const getResponse = await axios.get(config.getUrl);
-            const events = getResponse.data.events;
-            if (!events || events.length === 0) {
-              console.log(`No se encontraron eventos en ${config.getUrl}`);
-              continue;
+// Mapear deportes a equipos válidos
+const sportTeamMapping = {
+    nba: ["lakers", "hornets"],
+    nfl: ["chiefs"],
+    mlb: ["redsox", "dodgers"],
+    soccer: ["miami"],
+    uefa: ["champions"],
+    laliga: ["barcelona"],
+    f1: ["f1"],
+};
+
+cron.schedule("* * * * *", async () => {
+    console.log("⏳ Ejecutando cron job para sincronizar eventos deportivos...");
+    try {
+        for (const sport in sportTeamMapping) {
+            const teams = sportTeamMapping[sport];
+            if (!teams || teams.length === 0) {
+                console.log(`⚠️ No hay equipos definidos para ${sport}.`);
+                continue;
             }
-            // Iteramos sobre cada evento obtenido
-            for (const event of events) {
-              // Usamos listCalendarEvents para verificar si el evento ya existe
-              const duplicate = await listCalendarEvents(
-                event.start.dateTime,
-                event.end.dateTime,
-                event.summary
-              );
-              if (duplicate.items && duplicate.items.length > 0) {
-                console.log(`El evento "${event.summary}" ya existe. Se omite su creación.`);
-              } else {
-                // Si no existe, llamamos al endpoint POST para crear el evento
-                const postResponse = await axios.post(config.postUrl);
-                console.log(`Evento "${event.summary}" creado:`, postResponse.data.calendarResponse.id);
-              }
+            let scoreboardData;
+            try {
+                scoreboardData = await getScoreboardBySport(sport);
+            } catch (err) {
+                console.error(`Error obteniendo scoreboard para ${sport}:`, err.message);
+                continue;
             }
-          } catch (err) {
-            console.error(`Error sincronizando ${config.getUrl}:`, err.message);
-          }
+            for (const team of teams) {
+                try {
+                    const events = getCalendarEventsByTeam(scoreboardData, team);
+                    if (!events || events.length === 0) {
+                        console.log(`⚠️ No hay eventos para ${team} en ${sport} hoy.`);
+                        continue;
+                    }
+                    // Itera sobre cada evento obtenido
+                    for (const event of events) {
+                        // Genera el customEventId usando el resumen y el start del evento
+                        const uniqueId = crypto
+                            .createHash("md5")
+                            .update(`${event.summary}-${event.start.dateTime}`)
+                            .digest("hex");
+
+                        // Usa el rango exacto del evento para buscar duplicados
+                        const duplicate = await listCalendarEvents(
+                            event.start.dateTime,
+                            event.end.dateTime,
+                            `customEventId=${uniqueId}`
+                        );
+                        if (duplicate.items && duplicate.items.length > 0) {
+                            console.log(`🔄 Evento "${event.summary}" ya existe en Google Calendar. No se agregará.`);
+                            continue;
+                        }
+                        try {
+                            const calendarResponse = await createCalendarEvent(event);
+                            console.log(`✅ Evento "${event.summary}" creado en Google Calendar con ID: ${calendarResponse.id}`);
+                        } catch (postError) {
+                            console.error(`⚠️ Error al crear el evento "${event.summary}" para ${team} en ${sport}:`, postError.message);
+                        }
+                    }
+                } catch (err) {
+                    console.error(`❌ Error al obtener eventos para ${team} en ${sport}:`, err.message);
+                }
+            }
         }
-        console.log('Sincronización diaria finalizada.');
-      } catch (error) {
-        console.error('Error general en la sincronización:', error.message);
-      }
-    });
-  };
+        console.log("✅ Finalizó la sincronización de eventos.");
+    } catch (error) {
+        console.error("❌ Error general en la sincronización:", error.message);
+    }
+});
