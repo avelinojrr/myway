@@ -16,8 +16,9 @@ const sportTeamMapping = {
     f1: ["f1"],
 };
 
-cron.schedule("* * * * *", async () => {
-    console.log("⏳ Ejecutando cron job para sincronizar eventos deportivos...");
+// Función para ejecutar la sincronización
+const syncSportsEvents = async () => {
+    console.log("⏳ Ejecutando sincronización de eventos deportivos...");
     try {
         for (const sport in sportTeamMapping) {
             const teams = sportTeamMapping[sport];
@@ -61,7 +62,11 @@ cron.schedule("* * * * *", async () => {
                             const calendarResponse = await createCalendarEvent(event);
                             console.log(`✅ Evento "${event.summary}" creado en Google Calendar con ID: ${calendarResponse.id}`);
                         } catch (postError) {
-                            console.error(`⚠️ Error al crear el evento "${event.summary}" para ${team} en ${sport}:`, postError.message);
+                            if (postError.message.includes('invalid_grant') || postError.message.includes('token expired')) {
+                                console.error(`⚠️ Token error detectado. Los tokens se actualizarán automáticamente en el próximo intento.`);
+                            } else {
+                                console.error(`⚠️ Error al crear el evento "${event.summary}" para ${team} en ${sport}:`, postError.message);
+                            }
                         }
                     }
                 } catch (err) {
@@ -73,4 +78,12 @@ cron.schedule("* * * * *", async () => {
     } catch (error) {
         console.error("❌ Error general en la sincronización:", error.message);
     }
-});
+};
+
+// Programar la tarea para ejecutarse cada 12 horas
+cron.schedule("0 */12 * * *", syncSportsEvents);
+
+// Ejecutar una sincronización inmediata al iniciar la aplicación
+syncSportsEvents();
+
+export { syncSportsEvents };

@@ -1,19 +1,29 @@
-import { google } from "googleapis";
-import { googleConfig } from "../config/googleConfig.js";
-import crypto from "crypto";
+import { google } from 'googleapis';
+import crypto from 'crypto';
+import { getAuthenticatedClient } from './googleAuthService.js';
 
-const oauth2Client = new google.auth.OAuth2(
-    googleConfig.clientId,
-    googleConfig.clientSecret,
-    googleConfig.redirectUri
-);
+// Variable para almacenar la instancia del cliente del calendario
+let calendarInstance = null;
 
-// Configura el refresh token para mantener la sesión activa
-oauth2Client.setCredentials({
-    refresh_token: googleConfig.googleRefreshToken
-});
+/**
+ * Obtiene o crea una instancia del cliente de Google Calendar.
+ * @returns {Promise<Calendar>} - Instancia del cliente de Google Calendar.
+ */
+export const getCalendarClient = async () => {
+    if (calendarInstance) {
+        return calendarInstance;
+    }
 
-const calendar = google.calendar({ version: "v3", auth: oauth2Client });
+    try {
+        // Obtener un cliente OAtuh2 autenticado con manejo automático de renovación de tokens
+        const auth = await getAuthenticatedClient();
+        calendarInstance = google.calendar({ version: 'v3', auth });
+        return calendarInstance;
+    } catch (error) {
+        console.error('Error al obtener el cliente de Google Calendar:', error);
+        throw error;
+    }
+};
 
 /**
  * Genera un identificador único para el evento basado en su resumen y fecha de inicio.
@@ -21,9 +31,9 @@ const calendar = google.calendar({ version: "v3", auth: oauth2Client });
  * @returns {string} Identificador único (hash MD5).
  */
 const generateUniqueId = (eventData) => {
-    return crypto.createHash("md5")
+    return crypto.createHash('md5')
         .update(`${eventData.summary}-${eventData.start.dateTime}`)
-        .digest("hex");
+        .digest('hex');
 };
 
 /**
@@ -40,6 +50,9 @@ export const createCalendarEvent = async (eventData) => {
         eventData.extendedProperties = eventData.extendedProperties || { private: {} };
         eventData.extendedProperties.private.customEventId = uniqueId;
 
+        // Obtener cliente de calendar con tokens actualizados
+        const calendar = await getCalendarClient();
+        
         const responseCalendar = await calendar.events.insert({
             calendarId: "primary",
             requestBody: eventData,
@@ -72,6 +85,9 @@ export const listCalendarEvents = async (timeMin, timeMax, extendedPropertyQuery
             params.privateExtendedProperty = extendedPropertyQuery;
         }
 
+        // Obtener cliente de calendar con tokens actualizados
+        const calendar = await getCalendarClient();
+        
         const response = await calendar.events.list(params);
         return response.data;
     } catch (error) {

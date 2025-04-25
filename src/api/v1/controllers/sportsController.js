@@ -1,11 +1,11 @@
-import { getScoreboardBySport } from "../services/espnService.js";
-import { getCalendarEventsByTeam } from "../services/eventFilterService.js";
-import { createCalendarEvent } from "../services/calendarService.js";
+import { getScoreboardBySport } from '../services/espnService.js';
+import { getCalendarEventsByTeam } from '../services/eventFilterService.js';
+import { createCalendarEvent } from '../services/calendarService.js';
 
 /**
  * Controlador genérico para obtener eventos de un equipo o liga
  */
-export const fetchTeamEvents = async (req, res) => {
+export const fetchTeamEvents = async (req, res, next) => {
     try {
         const { sport, team } = req.params;
 
@@ -15,24 +15,21 @@ export const fetchTeamEvents = async (req, res) => {
         // Filtramos los eventos del equipo
         const events = getCalendarEventsByTeam(scoreboardData, team);
 
-        if(events.length === 0) {
+        if (events.length === 0) {
             return res.status(404).json({
                 message: `No se encontraron eventos para ${team}`,
             });
         }
         res.status(200).json({ events });
     } catch (error) {
-        res.status(500).json({
-            message: "Error al procesar los eventos",
-            error: error.message
-        });
+        next(error);
     }
 };
 
 /**
  * Controlador genérico para crear eventos en Google Calendar
  */
-export const createTeamCalendarEvent = async (req, res) => {
+export const createTeamCalendarEvent = async (req, res, next) => {
     try {
         const { sport, team } = req.params;
 
@@ -49,6 +46,7 @@ export const createTeamCalendarEvent = async (req, res) => {
         }
 
         const createdEvents = [];
+        const failedEvents = [];
 
         // Iterar sobre cada evento y guardarlo en Google Calendar
         for (const event of events) {
@@ -56,19 +54,33 @@ export const createTeamCalendarEvent = async (req, res) => {
                 const calendarResponse = await createCalendarEvent(event);
                 createdEvents.push(calendarResponse);
                 console.log(`✅ Evento "${event.summary}" creado en Google Calendar.`);
-            } catch (error) {
-                console.error(`⚠️ Error al crear el evento "${event.summary}":`, error.message);
+            } catch (postError) {
+                failedEvents.push({
+                    event: event.summary,
+                    error: postError.message,
+                });
+
+                // Si el error es de autenticación, lo pasamos al middleware
+                if (
+                    postError.message.includes('invalid_grant') ||
+                    postError.message.includes('token expired')
+                ) {
+                    return next(postError);
+                }
+
+                console.error(
+                    `⚠️ Error al crear el evento "${event.summary}":`,
+                    postError.message
+                );
             }
         }
 
         res.status(200).json({
-            message: `Eventos de ${team} creados en Google Calendar exitosamente`,
+            message: `Eventos de ${team} procesados en Google Calendar`,
             createdEvents,
+            failedEvents,
         });
     } catch (error) {
-        res.status(500).json({
-            message: 'Error al crear los eventos en Google Calendar',
-            error: error.message,
-        });
+        next(error);
     }
 };
