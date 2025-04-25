@@ -9,7 +9,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Ruta para almanecenar localmente el token
-const TOKEN_PATH = path.join(__dirname, '../../../..', 'tokens.json');
+const TOKEN_PATH = path.join(__dirname, '../../../..', 'tokens/tokens.json');
 
 /**
  * Crea el cliente OAuth2 de Google
