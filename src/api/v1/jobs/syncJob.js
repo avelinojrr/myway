@@ -80,8 +80,8 @@ const syncSportsEvents = async () => {
     }
 };
 
-// Programar la tarea para ejecutarse cada 12 horas
-cron.schedule("0 */12 * * *", syncSportsEvents);
+// Programar la tarea para que se ejecute cada 3 horas
+cron.schedule("0 */3 * * *", syncSportsEvents);
 
 // Ejecutar una sincronización inmediata al iniciar la aplicación
 syncSportsEvents();
