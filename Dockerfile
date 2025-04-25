@@ -1,7 +1,10 @@
-FROM node:16-alpine
+FROM node:22-alpine3.21
 
 # Create app directory
 WORKDIR /usr/src/app
+
+# Create folder
+COPY tokens /usr/src/app/tokens
 
 # Install app dependencies
 COPY package*.json ./
